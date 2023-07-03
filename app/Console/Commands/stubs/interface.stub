@@ -1,0 +1,8 @@
+<?php
+
+namespace App\Interfaces\RepositoriesInterface;
+
+interface {{repositoryName}}RepositoryInterface
+{
+    // Interface methods go here
+}

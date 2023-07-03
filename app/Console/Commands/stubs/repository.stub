@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\{{modelClass}};
+
+class {{repositoryName}}Repository
+{
+    protected {{modelClass}} $model;
+
+    public function __construct()
+    {
+        $this->model = new {{modelClass}}();
+    }
+
+    // Repository methods go here
+}
