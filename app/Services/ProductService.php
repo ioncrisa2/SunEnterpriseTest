@@ -12,7 +12,7 @@ class ProductService
     private ProductRepository $productRepository;
     private CategoryRepository $categoryRepository;
 
-    public function __construct(ProductRepository $productRepository,CategoryRepository $categoryRepository)
+    public function __construct(ProductRepository $productRepository, CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
         $this->productRepository = $productRepository;
@@ -34,7 +34,7 @@ class ProductService
         $product = $this->productRepository->storeProduct($data);
         $categories = $data['categories'];
 
-        foreach($categories as $name){
+        foreach ($categories as $name) {
             $category = $this->categoryRepository->getDataOrCreate($name);
             $category->product()->associate($product);
             $category->save();
@@ -43,19 +43,32 @@ class ProductService
         return $product;
     }
 
-    public function updateProduct(int $id,array $data): ?Product
+    public function updateProduct(int $id, array $data): ?Product
     {
-        $product = $this->productRepository->updateProduct($id,$data);
+        $product = $this->productRepository->updateProduct($id, $data);
         $categories = $data['categories'];
 
         $product->categories()->delete();
 
-        foreach($categories as $name){
+        foreach ($categories as $name) {
             $category = $this->categoryRepository->getDataOrCreate($name);
             $category->product()->associate($product);
             $category->save();
         }
 
         return $product;
+    }
+
+    public function deleteProduct(int $id): bool
+    {
+        $product = $this->productRepository->getProductById($id);
+
+        if ($product) {
+            $product->categories()->delete();
+            $product->delete();
+            return true;
+        }
+
+        return false;
     }
 }

@@ -24,11 +24,11 @@ class ProductController extends Controller
      */
     public function index(): ProductResource
     {
-        try{
+        try {
             $product = $this->productService->getAll();
-            return new ProductResource(true,'All Product Data',$product,200);
-        }catch(Exception $e){
-            return new ProductResource(false,'Failed to get product data : '. $e->getMessage(),null,500);
+            return new ProductResource(true, 'All Product Data', $product, 200);
+        } catch (Exception $e) {
+            return new ProductResource(false, 'Failed to get product data : ' . $e->getMessage(), null, 500);
         }
     }
 
@@ -57,33 +57,42 @@ class ProductController extends Controller
      */
     public function show(int $id): ProductResource
     {
-        try{
+        try {
             $product = $this->productService->showData($id);
-            return new ProductResource(true,"Detail product id ".$product->id,$product,200);
-        }catch(Exception $e){
-            return new ProductResource(false,"Failed to get Product detail : ".$e->getMessage(),null,500);
+            return new ProductResource(true, "Detail product id " . $product->id, $product, 200);
+        } catch (Exception $e) {
+            return new ProductResource(false, "Failed to get Product detail : " . $e->getMessage(), null, 500);
         }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request,int $id): ProductResource
+    public function update(UpdateProductRequest $request, int $id): ProductResource
     {
-        try{
+        try {
             $request->validated();
-            $product = $this->productService->updateProduct($id,$request->all());
-            return new ProductResource(true,'Product with id'.$product->id.' is updated',$product,200);
-        }catch(Exception $e){
-            return new ProductResource(false,'Failed to update product : '.$e->getMessage(),null,500);
+            $product = $this->productService->updateProduct($id, $request->all());
+            return new ProductResource(true, 'Product with id' . $product->id . ' is updated', $product, 200);
+        } catch (Exception $e) {
+            return new ProductResource(false, 'Failed to update product : ' . $e->getMessage(), null, 500);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id): ProductResource
     {
-        //
+        try {
+            $product = $this->productService->deleteProduct($id);
+            if ($product) {
+                return new ProductResource(true, 'Product Deleted', null, 204);
+            } else {
+                return new ProductResource(false, 'Product Delete fails', null, 400);
+            }
+        } catch (Exception $e) {
+            return new ProductResource(false, 'Something went wrong!', null, 500);
+        }
     }
 }
